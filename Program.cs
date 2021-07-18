@@ -20,7 +20,26 @@ namespace Note163Checkin
                 _scClient = new HttpClient();
             }
 
-            Console.WriteLine("有道云笔记签到开始运行...");
+           
+            try
+            {
+                Console.WriteLine("有道云笔记签到开始运行...");
+                await CheckInEveryDay(); 
+                Console.WriteLine("签到运行完毕");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"出现异常，{ex.Message}");
+                Console.WriteLine($"有道云笔记签到开始重新运行...");
+                await CheckInEveryDay();
+                Console.WriteLine("重新签到运行完毕");
+
+            }
+     
+        }
+
+        private static async Task CheckInEveryDay()
+        {
             for (int i = 0; i < _conf.Users.Length; i++)
             {
                 User user = _conf.Users[i];
@@ -73,7 +92,6 @@ namespace Note163Checkin
 
                 await Notify($"有道云笔记{title}签到成功，共获得空间 {space / 1048576} M");
             }
-            Console.WriteLine("签到运行完毕");
         }
 
         static string MD5Hash(string str)
